@@ -5,6 +5,7 @@
  */
 package com.adition.middleware.dbt.orientdb.bridge.core;
 
+import com.adition.middleware.dbt.orientdb.bridge.annotation.Vertex;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -23,7 +24,6 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.Entity;
 import javax.persistence.Transient;
 
 /**
@@ -130,7 +130,7 @@ public final class EntityAnalyzer {
 	 * @return
 	 */
 	private boolean isEntity(Class<?> clazz) {
-		return clazz.isAnnotationPresent(Entity.class);
+		return clazz.isAnnotationPresent(Vertex.class);
 	}
 	
 	/**

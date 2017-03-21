@@ -5,6 +5,7 @@
  */
 package dbt.orient.bridge.core.test.entities;
 
+import com.adition.middleware.dbt.orientdb.bridge.annotation.Vertex;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -16,7 +17,7 @@ import javax.persistence.Transient;
  *
  * @author dnikiforov
  */
-@Entity
+@Vertex
 public class SimpleEntityWithTransient {
 	
 	@Id

@@ -5,6 +5,7 @@
  */
 package dbt.orient.bridge.core.test.entities;
 
+import com.adition.middleware.dbt.orientdb.bridge.annotation.Vertex;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import javax.persistence.Id;
  *
  * @author dnikiforov
  */
-@Entity
+@Vertex
 public class SimpleEntity {
 	
 	@Id
