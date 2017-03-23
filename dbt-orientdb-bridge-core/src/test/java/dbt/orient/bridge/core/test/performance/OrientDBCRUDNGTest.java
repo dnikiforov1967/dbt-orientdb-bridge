@@ -5,6 +5,13 @@
  */
 package dbt.orient.bridge.core.test.performance;
 
+import com.orientechnologies.orient.core.sql.OCommandSQL;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+import com.tinkerpop.blueprints.Direction;
+import com.tinkerpop.blueprints.Edge;
+import com.tinkerpop.blueprints.GraphQuery;
+import com.tinkerpop.blueprints.Vertex;
+import com.tinkerpop.blueprints.impls.orient.OrientEdge;
 import com.tinkerpop.blueprints.impls.orient.OrientGraph;
 import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import com.tinkerpop.blueprints.impls.orient.OrientVertex;
@@ -62,17 +69,25 @@ public class OrientDBCRUDNGTest {
             long t0 = System.currentTimeMillis();
             graph = factory.getTx();
             long tr = System.currentTimeMillis();
-            for(int i=0; i<100; i++) {
+            for(int i=0; i<10; i++) {
                 Map<String,Object> propMap = new HashMap<>();
                 propMap.put("eId", UUID.randomUUID().toString());
                 propMap.put("externalId", UUID.randomUUID().toString());
-                propMap.put("name", "name"+i);
+                propMap.put("name", "owner"+i);
                 final OrientVertex owner = graph.addVertex("class:Owner",propMap);
+                for(int j=0; j<100; j++) {
+                    Map<String,Object> propMap2 = new HashMap<>();
+                    propMap2.put("eId", UUID.randomUUID().toString());
+                    propMap2.put("name", "car"+j); 
+                    final OrientVertex car = graph.addVertex("class:Car",propMap2);
+                    final OrientEdge edge = graph.addEdge("class:Category", owner, car, "category");
+                    edge.setProperty("name", "edge"+j);
+                }
             }
             long t1 = System.currentTimeMillis();
             graph.commit();
             long t2 = System.currentTimeMillis();
-            System.out.println("In milliseconds 100 owners insertion take "+(t2-t0));
+            System.out.println("In milliseconds 10 owners insertion take "+(t2-t0));
             System.out.println("In milliseconds getTx takes "+(tr-t0));
             System.out.println("In milliseconds commit takes "+(t2-t1));
         }
@@ -84,6 +99,13 @@ public class OrientDBCRUDNGTest {
         }
         finally {
             if (graph!=null) {
+                OCommandSQL oCommandSQL = new OCommandSQL("DELETE EDGE Category");
+                graph.command(oCommandSQL).execute();
+                oCommandSQL = new OCommandSQL("DELETE VERTEX Car");
+                graph.command(oCommandSQL).execute();
+                oCommandSQL = new OCommandSQL("DELETE VERTEX Owner");
+                graph.command(oCommandSQL).execute();
+                graph.commit();                
                 graph.shutdown();
             }
         }
